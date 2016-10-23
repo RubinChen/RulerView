@@ -310,7 +310,7 @@ public class RulerView extends View implements GestureDetector.OnGestureListener
     private int measureHeight(int heightMeasure) {
         int measureMode = MeasureSpec.getMode(heightMeasure);
         int measureSize = MeasureSpec.getSize(heightMeasure);
-        int result = 0;
+        int result ;
         if (mOrientation == HORIZONTAL) {
             result = (int) (mTextSize) * 4;
         } else {
@@ -362,9 +362,17 @@ public class RulerView extends View implements GestureDetector.OnGestureListener
 
     }
 
+    private   Rect mRect;
+    private DecimalFormat mDecimalFormat;
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if(mRect ==null){
+            mRect =new Rect();
+        }
+        if(mDecimalFormat==null){
+            mDecimalFormat=new DecimalFormat("##0");
+        }
 
         int start = mSelectedIndex - mViewScopeSize;
         int end = mSelectedIndex + mViewScopeSize;
@@ -441,12 +449,11 @@ public class RulerView extends View implements GestureDetector.OnGestureListener
                             }
 
                         } else {
-                            text = new DecimalFormat("##0").format(i * mIntervalValue + mMinValue);
+                            text =mDecimalFormat.format(i * mIntervalValue + mMinValue);
                         }
-                        Rect rect = new Rect();
-                        mTextPaint.getTextBounds(text, 0, text.length(), rect);
+                        mTextPaint.getTextBounds(text, 0, text.length(), mRect);
                         //文本的下边缘线中心位置
-                        canvas.drawText(text, 0, text.length(), x, mDivideByTenHeight + rect.height() + mTextBaseLineDistance, mTextPaint);
+                        canvas.drawText(text, 0, text.length(), x, mDivideByTenHeight + mRect.height() + mTextBaseLineDistance, mTextPaint);
                     }
                 }
                 x += mIntervalDistance;
@@ -513,12 +520,11 @@ public class RulerView extends View implements GestureDetector.OnGestureListener
 
                         } else {
                             //上大下小
-                            text = new DecimalFormat("##0").format(mMaxValue - i * mIntervalValue);
+                            text = mDecimalFormat.format(mMaxValue - i * mIntervalValue);
                         }
-                        Rect rect = new Rect();
-                        mTextPaint.getTextBounds(text, 0, text.length(), rect);
+                        mTextPaint.getTextBounds(text, 0, text.length(), mRect);
                         //文本的下边缘线中心位置
-                        canvas.drawText(text, 0, text.length(), mDivideByTenHeight + rect.width() / 2 + mTextBaseLineDistance, y + rect.height() / 2 - mDivideByTenWidth / 2, mTextPaint);
+                        canvas.drawText(text, 0, text.length(), mDivideByTenHeight + mRect.width() / 2 + mTextBaseLineDistance, y + mRect.height() / 2 - mDivideByTenWidth / 2, mTextPaint);
                     }
                 }
                 y += mIntervalDistance;
